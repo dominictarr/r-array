@@ -1,0 +1,21 @@
+{
+  "name": "r-array",
+  "version": "0.0.0",
+  "homepage": "https://github.com/dominictarr/r-array",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dominictarr/r-array.git"
+  },
+  "dependencies": {
+    "between": "~0.1.1",
+    "scuttlebutt": "~5.0.1"
+  },
+  "devDependencies": {
+    "tape": "~0.1.0"
+  },
+  "scripts": {
+    "test": "set -e; for t in test/*.js; do node $t; done"
+  },
+  "author": "'Dominic Tarr' <dominic.tarr@gmail.com> (http://dominictarr.com)",
+  "license": "MIT"
+}
