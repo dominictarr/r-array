@@ -17,6 +17,21 @@ test('push', function (t) {
   t.end()
 })
 
+test('pop', function (t) {
+
+  var a = new RArray()
+  a.push('a')
+  t.deepEqual(a.toJSON(), ['a'])
+  t.equal(a.pop(), 'a')
+  a.push('a')
+  a.push('b')
+  t.deepEqual(a.toJSON(), ['a', 'b'])
+  t.equal(a.pop(), 'b')
+  t.end()
+  
+
+})
+
 test('unshift', function (t) {
   var a = new RArray()
   a.unshift('a')
@@ -25,6 +40,21 @@ test('unshift', function (t) {
   t.deepEqual(a.toJSON(), ['b', 'a'])
   t.end()
 })
+
+test('shift', function (t) {
+  var a = new RArray()
+  a.unshift('a')
+  t.deepEqual(a.toJSON(), ['a'])
+  t.equal('a', a.shift())
+  a.unshift('b')
+  a.unshift('x')
+  t.deepEqual(a.toJSON(), ['x', 'b'])
+  var x = a.shift()
+  t.equal(x, 'x')
+
+  t.end()
+})
+
 
 test('splice', function (t) {
   var a = new RArray('a', 'b')
