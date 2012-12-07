@@ -8,13 +8,22 @@ inherits(RArray, Scuttlebutt)
 
 module.exports = RArray
 
+function fuzz () {
+  return Math.random().toString().substring(2, 5)
+}
+
 var DOEMIT = true, CHANGE = {}
+
+function order (a, b) {
+  //timestamp, then source
+  return between.strord(a[1], b[1]) || between.strord(a[2], b[2])
+}
 
 function RArray () {
   Scuttlebutt.call(this)
   this.keys = []
   this.store = {}
-  this._history = []
+  this._hist = {}
   if(arguments.length) {
     var self = this
     ;[].forEach.call(arguments, function (e) {
@@ -34,7 +43,7 @@ A.first = function () {
 }
 
 A.insert = function (before, val, after) {  
-  var key = between(before || between.lo, after || between.hi)
+  var key = between(before || between.lo, after || between.hi) + fuzz()
   this.set(key, val)
   return key
 }
@@ -48,25 +57,46 @@ A.unshift = function (val) {
 }
 
 A.indexOf = function (val) {
-  for(var k in this.store)
-    if(v === this.store[k]) return this.store[k]
+  for(var i in this.keys) {
+    var key = this.keys[i]
+    if(v === this.get(key)) return this.get(key)
+  }
+  return null
 }
 
 A.toJSON = function () {
   var store = this.store
+  var self = this
   return this.keys.map(function (key) {
-    return store[key]
+    return self.get(key)
   })
 }
 
 A.set = function (key, val) {
   if('string' == typeof key) {
+    if(val === null) return this.unset(key)
     this.store[key] = val
     if(!~this.keys.indexOf(key)) {
       this.keys.push(key)
       this.keys.sort()
     }
     CHANGE[key] = val
+    DOEMIT && this._emit()
+  }
+}
+
+A.get = function (key) {
+  return this.store[key]
+}
+
+A.unset = function (key) {
+  if('string' == typeof key) {
+    delete this.store[key]
+    var i = this.keys.indexOf(key)
+    if(!~i) return
+    this.keys.splice(i, 1)    
+
+    CHANGE[key] = null
     DOEMIT && this._emit()
   }
 }
@@ -83,17 +113,6 @@ A.shift = function () {
   var val = this.store[f]
   this.unset(f)
   return val
-}
-
-A.unset = function (key) {
-  if('string' == typeof key) {
-    delete this.store[key]
-    var i = this.keys.indexOf(key)
-    this.keys.splice(i, 1)    
-
-    CHANGE[key] = null
-    DOEMIT && this._emit()
-  }
 }
 
 A._emit = function () {
@@ -126,14 +145,30 @@ A.splice = function (i, d /*,...args*/) {
 }
 
 A.applyUpdate = function (update) {
-  this._history.push(update)
+  DOEMIT = false
+  var change = update[0], old
+  for(var key in change) {
+    if(!this._hist[key] || order(update, this._hist[key]) > 0) {
+      old = this._hist[key]
+      this._hist[key] = update
+      this.set(key, change[key])
+      old && this.emit('_remove', old)
+    }
+  }
+  DOEMIT = true
+  CHANGE = {}
   return true
 }
 
+
 A.history = function (sources) {
-  //TODO, filter by source...
-  //pull the thing from scuttlebutt/model
-  return filter(this._history, sources)
+  var h = []
+  for (var key in this._hist) {
+    var update = this._hist[key]
+      if(!~h.indexOf(update) && filter(update, sources))
+        h.push(update)
+  }
+  return h.sort(order)
 }
 
 A.forEach = function (fun) {
@@ -151,4 +186,3 @@ A.map = function (fun) {
 A.reduce = function (fun, initial) {
   return this.toJSON().reduce(fun, initial)
 }
-
