@@ -147,14 +147,35 @@ A.splice = function (i, d /*,...args*/) {
 A.applyUpdate = function (update) {
   DOEMIT = false
   var change = update[0], old
+  var apply = {}, ch = {}
+  var old = {}
   for(var key in change) {
-    if(!this._hist[key] || order(update, this._hist[key]) > 0) {
-      old = this._hist[key]
-      this._hist[key] = update
-      this.set(key, change[key])
-      old && this.emit('_remove', old)
-    }
+    if(!this._hist[key] || order(update, this._hist[key]) > 0)
+      apply[key] = change[key]
   }
+  //allow the user to see what the change is going to be.
+  this.emit('preupdate', apply) 
+
+  //apply the change...
+  for(var key in apply) {
+    var o = this._hist[key]
+    o && (old[o[1]+':'+o[2]] = o) //ts:source
+    this._hist[key] = update
+    this.set(key, apply[key])
+  }
+
+  //check if old elements need to be removed.
+  //may also want to keep old updates hanging around 
+  //so the user can see recent history...
+  for(var id in old) {
+    var o = old[id][0], rm = true
+    for(var key in o) {
+      if(this._hist[key] === old[id]) rm = false
+    }
+    if(rm)
+      this.emit('_remove', old[id])
+  }
+    
   DOEMIT = true
   CHANGE = {}
   return true
