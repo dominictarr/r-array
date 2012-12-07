@@ -26,17 +26,11 @@ function RArray () {
 var A = RArray.prototype
 
 A.last = function () {
-  var max = null
-  for(var k in this.store)
-    if(!max || max < k) max = k
-  return max
+  return this.keys[this.keys.length - 1]
 }
 
 A.first = function () {
-  var min = null
-  for(var k in this.store)
-    if(!min || min < k) min = k
-  return min
+  return this.keys[0]
 }
 
 A.insert = function (before, val, after) {  
@@ -75,6 +69,20 @@ A.set = function (key, val) {
     CHANGE[key] = val
     DOEMIT && this._emit()
   }
+}
+
+A.pop = function () {
+  var l = this.last()
+  var val = this.store[l]
+  this.unset(l)
+  return val
+}
+
+A.shift = function () {
+  var f = this.first()
+  var val = this.store[f]
+  this.unset(f)
+  return val
 }
 
 A.unset = function (key) {
@@ -127,3 +135,20 @@ A.history = function (sources) {
   //pull the thing from scuttlebutt/model
   return filter(this._history, sources)
 }
+
+A.forEach = function (fun) {
+  return this.toJSON().forEach(fun)
+}
+
+A.filter = function (fun) {
+  return this.toJSON().filter(fun)
+}
+
+A.map = function (fun) {
+  return this.toJSON().map(fun)
+}
+
+A.reduce = function (fun, initial) {
+  return this.toJSON().reduce(fun, initial)
+}
+
