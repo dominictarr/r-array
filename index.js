@@ -178,6 +178,7 @@ A.applyUpdate = function (update) {
     
   DOEMIT = true
   CHANGE = {}
+  this.emit('update', apply)
   return true
 }
 
