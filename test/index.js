@@ -9,24 +9,34 @@ test('empty.toJSON()', function (t) {
 })
 
 test('push', function (t) {
-  var a = new RArray()
+  var a = new RArray(), called = 0
+  a.on('update', function (apply) {
+    called ++
+  })
   a.push('a')
   t.deepEqual(a.toJSON(), ['a'])
+  t.equal(called, 1)
   a.push('b')
   t.deepEqual(a.toJSON(), ['a', 'b'])
+  t.equal(called, 2)
   t.end()
 })
 
 test('pop', function (t) {
 
-  var a = new RArray()
+  var a = new RArray(), called = 0
+  a.on('update', function (apply) {
+    called ++
+  })
   a.push('a')
   t.deepEqual(a.toJSON(), ['a'])
   t.equal(a.pop(), 'a')
+  t.equal(called, 2)
   a.push('a')
   a.push('b')
   t.deepEqual(a.toJSON(), ['a', 'b'])
   t.equal(a.pop(), 'b')
+  t.equal(called, 5)
   t.end()
   
 
