@@ -24,6 +24,7 @@ function RArray () {
   this.keys = []
   this.store = {}
   this._hist = {}
+  this.length = 0
   if(arguments.length) {
     var self = this
     ;[].forEach.call(arguments, function (e) {
@@ -75,6 +76,7 @@ A.toJSON = function () {
 A.set = function (key, val) {
   if('string' == typeof key) {
     if(val === null) return this.unset(key)
+    if(null == this.store[key]) this.length ++
     this.store[key] = val
     if(!~this.keys.indexOf(key)) {
       this.keys.push(key)
@@ -91,6 +93,7 @@ A.get = function (key) {
 
 A.unset = function (key) {
   if('string' == typeof key) {
+    if(null != this.store[key]) this.length --
     delete this.store[key]
     var i = this.keys.indexOf(key)
     if(!~i) return
@@ -208,3 +211,4 @@ A.map = function (fun) {
 A.reduce = function (fun, initial) {
   return this.toJSON().reduce(fun, initial)
 }
+
