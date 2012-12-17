@@ -19,6 +19,7 @@ test('push', function (t) {
   a.push('b')
   t.deepEqual(a.toJSON(), ['a', 'b'])
   t.equal(called, 2)
+  t.equal(a.length, 2)
   t.end()
 })
 
@@ -37,6 +38,8 @@ test('pop', function (t) {
   t.deepEqual(a.toJSON(), ['a', 'b'])
   t.equal(a.pop(), 'b')
   t.equal(called, 5)
+  console.log(a.toJSON())
+  t.equal(a.length, 1)
   t.end()
   
 
@@ -48,6 +51,7 @@ test('unshift', function (t) {
   t.deepEqual(a.toJSON(), ['a'])
   a.unshift('b')
   t.deepEqual(a.toJSON(), ['b', 'a'])
+  t.equal(a.length, 2)
   t.end()
 })
 
@@ -61,6 +65,7 @@ test('shift', function (t) {
   t.deepEqual(a.toJSON(), ['x', 'b'])
   var x = a.shift()
   t.equal(x, 'x')
+  t.equal(a.length, 1)
 
   t.end()
 })
@@ -81,6 +86,7 @@ test('splice', function (t) {
 
   a.splice(0, 6, 'x', 'y', 'z')
   t.deepEqual(a.toJSON(), ['x', 'y', 'z'])
+  t.equal(a.length, 3)
 
   t.end()
 })
