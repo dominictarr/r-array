@@ -32,6 +32,25 @@ process.nextTick(function () {
 
 ```
 
+## Widget
+
+There is a simple widget provided for rendering the `r-array` to real time html.
+`widget` takes an `RArray` instance, and a template function
+(a function that accepts a value and returns a `HTMLElement`)
+``` js
+var widget = require('r-array/widget')
+var a = new RArray()
+
+document.body.appendChild(
+  widget(a, function (value) {
+    var pre = document.createElement('pre')
+    pre.innerText = JSON.stringify(value)
+    return pre
+  })
+)
+```
+
+
 ## License
 
 MIT
