@@ -60,9 +60,13 @@ A.unshift = function (val) {
 A.indexOf = function (val) {
   for(var i in this.keys) {
     var key = this.keys[i]
-    if(v === this.get(key)) return this.get(key)
+    if(v === this.get(key)) return i
   }
   return null
+}
+
+A.indexOfKey = function (key) {
+  return this.keys.indexOf(key)
 }
 
 A.toJSON = function () {
