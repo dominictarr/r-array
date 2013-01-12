@@ -37,6 +37,8 @@ process.nextTick(function () {
 There is a simple widget provided for rendering the `r-array` to real time html.
 `widget` takes an `RArray` instance, and a template function
 (a function that accepts a value and returns a `HTMLElement`)
+
+If you do not provide a template, RArray will render the JSON value of each item.
 ``` js
 var widget = require('r-array/widget')
 var a = new RArray()
