@@ -2,7 +2,14 @@
 module.exports = function (rarry, template) {
 
   var root = document.createElement('div')
-  template = template || require('./default-template')
+  template = template || function (val, key, el) {
+    function pre (val) { return '<pre>'+JSON.stringify(val)+'</pre>' }
+    if(el)
+      return el.innerHTML = pre(val), el
+    var el = document.createElement('span')
+    el.innerHTML = pre(val)
+    return el
+  }
 
   console.log(template)
 
@@ -16,6 +23,10 @@ module.exports = function (rarry, template) {
   function update (key, change) {
     var el
     if(el = elements[key]) {
+      if(change == null) {
+        return root.removeChild(el)
+      }
+
       var _el = template.call(el, change, key, el)
       if(_el != el) {
         elements[key] = _el
