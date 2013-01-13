@@ -47,6 +47,12 @@ module.exports = function (rarry, template) {
       root.appendChild(el)
     }
   }
+
+  //render the current contents...
+  rarry.keys.forEach(function (key) {
+    update(key, rarry.get(key))
+  })
+
   return root
 }
 
