@@ -216,7 +216,4 @@ A.reduce = function (fun, initial) {
   return this.toJSON().reduce(fun, initial)
 }
 
-A.length = function () {
-  return this.toJSON().length
-}
-
+//.length is a property, not a function.
