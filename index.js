@@ -200,16 +200,16 @@ A.history = function (sources) {
   return h.sort(order)
 }
 
-A.forEach = function (fun) {
-  return this.toJSON().forEach(fun)
+A.forEach = function (fun, thisArg) {
+  return this.toJSON().forEach(fun, thisArg)
 }
 
-A.filter = function (fun) {
-  return this.toJSON().filter(fun)
+A.filter = function (fun, thisArg) {
+  return this.toJSON().filter(fun, thisArg)
 }
 
-A.map = function (fun) {
-  return this.toJSON().map(fun)
+A.map = function (fun, thisArg) {
+  return this.toJSON().map(fun, thisArg)
 }
 
 A.reduce = function (fun, initial) {
