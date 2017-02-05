@@ -20,6 +20,7 @@ function order (a, b) {
 }
 
 function RArray () {
+  if (!(this instanceof RArray)) return new RArray()
   Scuttlebutt.call(this)
   this.keys = []
   this.store = {}
